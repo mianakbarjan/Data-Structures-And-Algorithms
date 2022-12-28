@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 class Node{
@@ -23,11 +24,25 @@ void displayPreOrder(Node *nodePtr);
 void displayPostOrder(Node *nodePtr);
 void deleteNode(int value, Node *&nodePtr);
 void deletion (Node *&nodePtr);
+/* Code to swap any two nodes that are not placed correctly*/
+void markTree(Node* root, Node*& prev, Node*& first, Node*& end) {
+        if (!root) return;
+        markTree(root->left, prev, first, end);
+        if (prev) {
+            if (root->data < prev->data) {
+                if (!first) {
+                    first = prev;
+                }
+                end = root;
+            }
+        }
+        prev = root;
+        markTree(root->right, prev, first, end);
+    }
 public:
 BinarySearchTree(){
     root = nullptr;
 }
-
 void insertNode(int value){
     Node *newNode = new Node(value);
     Node *tempNode = root;
@@ -93,6 +108,13 @@ bool searchNode (int value){
 void removeNode(int num){
 deleteNode (num, root);
 }
+/* Code to swap any two nodes that are not placed correctly*/
+void recoverTree(Node* root) {
+        Node *prev = nullptr, *first = nullptr, *end = nullptr;
+        markTree(root, prev, first, end);
+        swap(first->data, end->data);
+        return;
+    }
 };
 void BinarySearchTree::displayInOrder(Node *ptr){
     if (ptr){
